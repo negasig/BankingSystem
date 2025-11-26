@@ -3963,11 +3963,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\projects\\BankSystem\\BankSystem.csproj",
+      "projectUniqueName": "C:\\projects\\BankingSystem\\BankSystem\\BankSystem.csproj",
       "projectName": "BankSystem",
-      "projectPath": "C:\\projects\\BankSystem\\BankSystem.csproj",
+      "projectPath": "C:\\projects\\BankingSystem\\BankSystem\\BankSystem.csproj",
       "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-      "outputPath": "C:\\projects\\BankSystem\\obj\\",
+      "outputPath": "C:\\projects\\BankingSystem\\BankSystem\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

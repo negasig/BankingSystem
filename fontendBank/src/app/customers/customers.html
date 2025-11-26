@@ -1,0 +1,22 @@
+<h2>Customers</h2>
+<table *ngIf="customers.length>0" border="1">
+    <thead>
+        <tr>
+            <th>firstName</th>
+            <th>lastName</th>
+            <th>email</th>
+            <th>city</th>
+            <th>balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let cust of customers">
+            <td>{{cust.firstName}}</td>
+             <td>{{cust.lastName}}</td>
+              <td>{{cust.email}}</td>
+               <td>{{cust.city}}</td>
+                <td>{{cust.balance}}</td>
+        </tr>
+    </tbody>
+</table>
+<p *ngIf="customers.length === 0">No customers available.</p>
