@@ -4,3 +4,4 @@ import { App } from './app/app';
 
 bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));
+import '@fortawesome/fontawesome-free/css/all.min.css';

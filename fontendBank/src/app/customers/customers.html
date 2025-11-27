@@ -1,12 +1,15 @@
+
+
 <h2>Customers</h2>
 <table *ngIf="customers.length>0" border="1">
     <thead>
         <tr>
-            <th>firstName</th>
-            <th>lastName</th>
-            <th>email</th>
-            <th>city</th>
-            <th>balance</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Email</th>
+            <th>City</th>
+            <th>Balance</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -16,6 +19,8 @@
               <td>{{cust.email}}</td>
                <td>{{cust.city}}</td>
                 <td>{{cust.balance}}</td>
+                <td><i class="fa fa-trash" style="cursor:pointer; color: red;" (click)="deletecustomer(cust.id)"></i> <i class="fa fa-edit" style="cursor:pointer; color:rgb(10, 212, 253);">
+        </i></td>
         </tr>
     </tbody>
 </table>

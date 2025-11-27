@@ -50,8 +50,8 @@ namespace BankSystem.controllers
                 return NotFound($"Customer with ID {id} not found");
             }
             _context.Customer.Remove(cus);
-            _context.SaveChangesAsync();
-            return Ok($"Customer with ID {id} has been deleted");
+            _context.SaveChanges();
+            return Ok("Customer with ID "+id+ "has been deleted");
         }
         [HttpPut("{id}")]
         public ActionResult UpdateCustomer(int id, Customer updatedCustomer)
