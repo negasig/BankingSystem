@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { Customerss } from './customers/customers';
-import { NavMenu } from './nav-menu/nav-menu';
+import { Customerss } from './components/customers/customers';
+import { NavMenu } from './components/nav-menu/nav-menu';
 
 @Component({
   selector: 'app-root',
