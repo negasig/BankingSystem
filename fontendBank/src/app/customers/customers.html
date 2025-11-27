@@ -1,6 +1,7 @@
 
 
 <h2>Customers</h2>
+<button class="btn btn-secondary" (click)="opendAddModal()">register</button>
 <table *ngIf="customers.length>0" border="1">
     <thead>
         <tr>
@@ -19,9 +20,94 @@
               <td>{{cust.email}}</td>
                <td>{{cust.city}}</td>
                 <td>{{cust.balance}}</td>
-                <td><i class="fa fa-trash" style="cursor:pointer; color: red;" (click)="deletecustomer(cust.id)"></i> <i class="fa fa-edit" style="cursor:pointer; color:rgb(10, 212, 253);">
+                <td><i class="fa fa-trash" style="cursor:pointer; color: red;" (click)="deletecustomer(cust.id)"></i>
+                     <i class="fa fa-edit"  (click)="opendEditModal(cust)" style="cursor: pointer;">
         </i></td>
         </tr>
     </tbody>
 </table>
+<!-- Update Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Update Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" *ngIf="selectedCustomer">
+        <form>
+          <label>First Name</label>
+          <input class="form-control"
+                 [(ngModel)]="selectedCustomer.firstName"
+                 name="firstName">
+
+          <label>Last Name</label>
+          <input class="form-control"
+                 [(ngModel)]="selectedCustomer.lastName"
+                 name="lastName">
+
+          <label>Email</label>
+          <input class="form-control"
+                 [(ngModel)]="selectedCustomer.email"
+                 name="email">
+
+          <label>City</label>
+          <input class="form-control"
+                 [(ngModel)]="selectedCustomer.city"
+                 name="city">
+
+          <label>Balance</label>
+          <input type="number"
+                 class="form-control"
+                 [(ngModel)]="selectedCustomer.balance"
+                 name="balance">
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-success" (click)="updateCustomer()">Save Changes</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addcustomer" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Register Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <label>First Name</label>
+          <input class="form-control" [(ngModel)]="newcustomer.firstName" name="firstName" required>
+
+          <label>Last Name</label>
+          <input class="form-control" [(ngModel)]="newcustomer.lastName" name="lastName">
+
+          <label>Email</label>
+          <input class="form-control" [(ngModel)]="newcustomer.email" name="email">
+
+          <label>City</label>
+          <input class="form-control" [(ngModel)]="newcustomer.city" name="city">
+
+          <label>Amount</label>
+          <input type="number" class="form-control" [(ngModel)]="newcustomer.balance" name="balance">
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-success" (click)="rgisterCustomer()">Save Changes</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 <p *ngIf="customers.length === 0">No customers available.</p>
