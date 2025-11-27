@@ -5,6 +5,7 @@ import { log } from 'console';
 import { CommonModule, NgIf } from '@angular/common';
 import { Router } from 'express';
 import { FormControl, FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 declare var bootstrap: any;
 
 interface Customern{
