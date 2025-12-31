@@ -7,5 +7,7 @@ public class BankingDbContext:DbContext
     {
     }
     public DbSet<Customer> Customer { get; set; }
+    public DbSet<Transaction> Transactions { get; set;}
+
 }
 

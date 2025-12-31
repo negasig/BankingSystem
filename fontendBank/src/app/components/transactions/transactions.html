@@ -1,1 +1,23 @@
 <h2>Transactions</h2>
+<table *ngIf="transactions$ | async as transactions"  border="1">
+    <thead>
+        <tr>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>SenderAccount</th>
+            <th>ReceiverAccount</th>
+            <th>Amount</th>
+            <th>Reason</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let transac of transactions">
+            <td>{{transac.firstName}}</td>
+             <td>{{transac.lastName}}</td>
+              <td>{{transac.senderAccount}}</td>
+              <td>{{transac.receiverAccount}}</td>
+               <td>{{transac.amount}}</td>
+                <td>{{transac.reason}}</td>
+        </tr>
+    </tbody>
+</table>

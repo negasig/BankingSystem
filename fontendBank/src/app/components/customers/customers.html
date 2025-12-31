@@ -2,7 +2,7 @@
 
 <h2>Customers</h2>
 <button class="btn btn-secondary" (click)="opendAddModal()">register</button>
-<table *ngIf="customers.length>0" border="1">
+<table *ngIf="customers$ | async as customers" border="1">
     <thead>
         <tr>
             <th>FirstName</th>
@@ -99,6 +99,10 @@
 
           <label>Amount</label>
           <input type="number" class="form-control" [(ngModel)]="newcustomer.balance" name="balance">
+                <label>Username</label>
+          <input type="text"class="form-control" [(ngModel)]="newcustomer.username" name="username">
+                <label>Password</label>
+          <input type="text" class="form-control" [(ngModel)]="newcustomer.password" name="password">
         </form>
       </div>
 <div *ngIf="customerform.submitted && !newcustomer.firstName" class="text-danger">
@@ -114,4 +118,3 @@
     </div>
   </div>
 </div>
-<p *ngIf="customers.length === 0">No customers available.</p>

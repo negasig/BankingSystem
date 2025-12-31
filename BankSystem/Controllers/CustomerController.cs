@@ -1,12 +1,15 @@
 
 using BankSystem.Models;
+using BankSystem.NewFolder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Server;
+using System.Diagnostics;
 namespace BankSystem.controllers
 {
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
 
 
 
@@ -20,7 +23,7 @@ namespace BankSystem.controllers
         [HttpGet("list")]
         public async Task<ActionResult> GetCustomers()
         {
-            var customers = await _context.Customer.ToListAsync();
+            var customers = await _context.Customer.AsNoTracking().ToListAsync();
             return Ok(customers);
         }
 
@@ -70,10 +73,56 @@ namespace BankSystem.controllers
             return Ok(existingCustomer);
         }
         [HttpPost("login")]
-        public ActionResult<Customer> Login()
+        public Task<IActionResult> Login(LoginDto login)
+        { 
+            var customer = _context.Customer.FirstOrDefault(c => c.Username == login.Username && c.Password == login.Password);
+            if (customer == null)
+            {
+                return Task.FromResult<IActionResult>(Unauthorized("Invalid email or password"));
+            }
+            return Task.FromResult<IActionResult>(Ok("Loged in Successfully"));
+        }
+        [HttpPost("transfer")]
+        public Task<IActionResult> Transfer(Transaction tr)
         {
+            var sender = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.SenderAccount);
+            var receiver = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.ReceiverAccount);
+          
+            if (sender!=null && receiver!=null && sender.Balance>tr.Amount)
+            {
+                receiver.Balance += tr.Amount;
+                sender.Balance -= tr.Amount;
+                _context.SaveChanges();
 
-            return Ok("Negasi Gide");
+                _context.Transactions.Add(new Transaction
+                {
+                    FirstName = sender.FirstName,
+                    LastName = sender.LastName,
+                    Amount = tr.Amount,
+                    SenderAccount = tr.SenderAccount,
+                    ReceiverAccount = tr.ReceiverAccount,
+                    Reason = tr.Reason
+                });
+                _context.SaveChanges();
+            }
+           
+            else if (sender!=null&&sender.Balance<tr.Amount)
+            {
+                return Task.FromResult<IActionResult>(BadRequest("Sender has insufficient balance"));
+            }
+            else if(sender==null || receiver == null)
+            {
+                return Task.FromResult<IActionResult>(BadRequest("Sender and Receiver Accounts Are Required"));
+            }
+
+
+                return Task.FromResult<IActionResult>(Ok("trsnaferd"));
+        }
+        [HttpGet("transactions")]
+        public async Task<IActionResult> geTransactions()
+        {
+            var transactions= await _context.Transactions.ToListAsync();
+            return Ok(transactions);
         }
     }
 }

@@ -6,6 +6,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Router } from 'express';
 import { FormControl, FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 declare var bootstrap: any;
 
 interface Customern{
@@ -15,10 +16,13 @@ interface Customern{
    email:string
    city:string
    balance:number
+   username:string
+   password:string
 }
 @Component({
   selector: 'app-customers',
   imports: [HttpClientModule, CommonModule, FormsModule],
+  standalone: true,
   templateUrl: './customers.html',
   styleUrl: './customers.css',
 })
@@ -26,45 +30,22 @@ interface Customern{
 export class Customerss {
   editing:boolean=false;
   selectedCustomer: Customern | null = null;
-  public customers: Customern[]=[];
+  public customers$ = new BehaviorSubject<Customern[]>([]);
   newcustomer:Customern={} as Customern
   constructor(private http: HttpClient, private cd: ChangeDetectorRef){}
   
   ngOnInit(): void {
-    this.getCustomers();
+    this.http.get<Customern[]>('https://localhost:40443/api/list')
+    .subscribe(customers=>this.customers$.next(customers)) //populate initial value
   }
-getCustomers(){
-  this.http.get<Customern[]>('https://localhost:40443/api/customer/list').subscribe(
-    result=>{
-      this.customers=result;
-    console.log(this.customers);
-    this.cd.detectChanges();
-    },
-    (error)=>{
-  console.error(error);
-   this.cd.detectChanges();
-    }
-  );
-
-}
-getCustomersdfh(){
-  fetch('https://localhost:40443/api/customer/list')
-  .then(c=>c.json())
-  .then(c=>{
-    this.customers=c;
-    this.cd.detectChanges();
-  })
-}
 deletecustomer(id: number){
    console.log("Clicked Delete ID =", id);
    alert("are you sure you want dlete customer with id "+id)
-  this.http.delete(`https://localhost:40443/api/customer/deletcus/${id}`, { responseType: 'text' })
+  this.http.delete(`https://localhost:40443/api/deletcus/${id}`, { responseType: 'text' })
   .subscribe((res)=>{
     console.log(res);
-    
   })
-       
-        this.customers = this.customers.filter(c => c.id !== id); // Remove row from U
+        this.customers$.pipe(map(c => c.filter(u=>u.id !== id))); // Remove row from U
 }
 
 opendEditModal(customer: Customern){
@@ -72,17 +53,27 @@ opendEditModal(customer: Customern){
   const modal=new bootstrap.Modal(document.getElementById("editModal"));
   modal.show();
 }
-updateCustomer(){
+updateCustomer() {
+  if (!this.selectedCustomer) return;
 
-  this.http.put(`https://localhost:40443/api/customer/${this.selectedCustomer?.id}`, this.selectedCustomer, {responseType: 'text'})
-        .subscribe({
-      next: () => {
-        alert("✔ Customer updated!");
-        const index = this.customers.findIndex(c => c.id === this.selectedCustomer!.id);
-        this.customers[index] = this.selectedCustomer!;
-      }
-})
+  this.http.put(
+    `https://localhost:40443/api/${this.selectedCustomer.id}`,
+    this.selectedCustomer,
+    { responseType: 'text' }
+  ).subscribe(() => {
+
+    const customers = [...this.customers$.value];
+    const index = customers.findIndex(c => c.id === this.selectedCustomer!.id);
+
+    if (index !== -1) {
+      customers[index] = this.selectedCustomer!;
+      this.customers$.next(customers);
+    }
+
+    alert("✔ Customer updated!");
+  });
 }
+
 opendAddModal(){
     this.newcustomer = {} as Customern; // reset form
     const modall=new bootstrap.Modal(document.getElementById("addcustomer"));
@@ -90,11 +81,12 @@ opendAddModal(){
 }
 rgisterCustomer(){
 
-  this.http.post('https://localhost:40443/api/customer/addcustomer', this.newcustomer,  {responseType: 'text'})
+  this.http.post('https://localhost:40443/api/addcustomer', this.newcustomer,  {responseType: 'text'})
         .subscribe({
       next: (res) => {
         alert("registerd");
-        const index = this.customers.push(this.newcustomer);
+        const curent=this.customers$.value;
+        this.customers$.next([...curent, this.newcustomer]);
        const modalEl = document.getElementById('addcustomer');
           bootstrap.Modal.getInstance(modalEl!)?.hide(); 
       }
