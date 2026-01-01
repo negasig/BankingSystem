@@ -30,13 +30,14 @@ interface Customern{
 export class Customerss {
   editing:boolean=false;
   selectedCustomer: Customern | null = null;
-  public customers$ = new BehaviorSubject<Customern[]>([]);
+  private customersSubject = new BehaviorSubject<Customern[]>([]);
+  public customers$ = this.customersSubject.asObservable();
   newcustomer:Customern={} as Customern
   constructor(private http: HttpClient, private cd: ChangeDetectorRef){}
   
   ngOnInit(): void {
     this.http.get<Customern[]>('https://localhost:40443/api/list')
-    .subscribe(customers=>this.customers$.next(customers)) //populate initial value
+    .subscribe(customers=>this.customersSubject.next(customers)) //populate initial value
   }
 deletecustomer(id: number){
    console.log("Clicked Delete ID =", id);
@@ -45,7 +46,8 @@ deletecustomer(id: number){
   .subscribe((res)=>{
     console.log(res);
   })
-        this.customers$.pipe(map(c => c.filter(u=>u.id !== id))); // Remove row from U
+       const filterd= this.customersSubject.value.filter(u=>u.id !== id); // Remove row from U
+        this.customersSubject.next(filterd)
 }
 
 opendEditModal(customer: Customern){
@@ -62,12 +64,12 @@ updateCustomer() {
     { responseType: 'text' }
   ).subscribe(() => {
 
-    const customers = [...this.customers$.value];
+    const customers = [...this.customersSubject.value];
     const index = customers.findIndex(c => c.id === this.selectedCustomer!.id);
 
     if (index !== -1) {
       customers[index] = this.selectedCustomer!;
-      this.customers$.next(customers);
+      this.customersSubject.next(customers);
     }
 
     alert("✔ Customer updated!");
@@ -85,8 +87,8 @@ rgisterCustomer(){
         .subscribe({
       next: (res) => {
         alert("registerd");
-        const curent=this.customers$.value;
-        this.customers$.next([...curent, this.newcustomer]);
+        const curent=this.customersSubject.value;
+        this.customersSubject.next([...curent, this.newcustomer]);
        const modalEl = document.getElementById('addcustomer');
           bootstrap.Modal.getInstance(modalEl!)?.hide(); 
       }

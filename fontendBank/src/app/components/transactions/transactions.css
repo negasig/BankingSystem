@@ -8,8 +8,13 @@ table{
     width: 100%;
 }
 th{
-    text-align: left
+    text-align: left;
+    background-color: azure;
+    
 }
 th, td{
     border: 1px solid black;
+}
+td{
+margin: 10px;
 }

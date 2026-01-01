@@ -7,6 +7,6 @@ nav a{
 nav{
     display: flex;
     justify-content: center;
-    background-color: rgb(128, 0, 0);
+    background-color: #1166EE;
     padding: 4px;
 }

@@ -12,6 +12,7 @@ interface Transactionss{
  receiverAccount :string
  amount :number
  reason :string
+ createdAt: Date
 }
 @Component({
   selector: 'app-transactions',

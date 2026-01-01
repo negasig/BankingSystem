@@ -110,13 +110,17 @@ namespace BankSystem.controllers
             {
                 return Task.FromResult<IActionResult>(BadRequest("Sender has insufficient balance"));
             }
-            else if(sender==null || receiver == null)
+            else if(sender==null)
             {
-                return Task.FromResult<IActionResult>(BadRequest("Sender and Receiver Accounts Are Required"));
+                return Task.FromResult<IActionResult>(BadRequest(tr.SenderAccount+" is not valid account"));
+            }
+            else if (receiver == null)
+            {
+                return Task.FromResult<IActionResult>(BadRequest(tr.ReceiverAccount + " is not valid account"));
             }
 
 
-                return Task.FromResult<IActionResult>(Ok("trsnaferd"));
+            return Task.FromResult<IActionResult>(Ok("trsnaferd"));
         }
         [HttpGet("transactions")]
         public async Task<IActionResult> geTransactions()

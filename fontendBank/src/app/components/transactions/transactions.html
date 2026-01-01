@@ -8,6 +8,7 @@
             <th>ReceiverAccount</th>
             <th>Amount</th>
             <th>Reason</th>
+            <th>Date</th>
         </tr>
     </thead>
     <tbody>
@@ -16,8 +17,9 @@
              <td>{{transac.lastName}}</td>
               <td>{{transac.senderAccount}}</td>
               <td>{{transac.receiverAccount}}</td>
-               <td>{{transac.amount}}</td>
+               <td>{{transac.amount}} Birr</td>
                 <td>{{transac.reason}}</td>
+                <td>{{transac.createdAt | date:'medium'  }}</td>
         </tr>
     </tbody>
 </table>
