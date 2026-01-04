@@ -36,7 +36,7 @@ export class Customerss {
   constructor(private http: HttpClient, private cd: ChangeDetectorRef){}
   
   ngOnInit(): void {
-    this.http.get<Customern[]>('https://localhost:40443/api/list')
+    this.http.get<Customern[]>('https://localhost:40443/api/customers')
     .subscribe(customers=>this.customersSubject.next(customers)) //populate initial value
   }
 deletecustomer(id: number){
