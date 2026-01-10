@@ -31,8 +31,8 @@ namespace BankSystem.Domains
 
         public void Withdraw(decimal amount)
         {
-            if (amount > 0) {
-                throw new NotImplementedException("amount should be greater");
+            if (amount < 0) {
+                throw new NotImplementedException("amount should be Positive");
             }
   
             this.Balance -= amount;
@@ -40,11 +40,15 @@ namespace BankSystem.Domains
 
         public void Deposit(decimal amount)
         {
-            if (amount > this.Balance)
+            if (amount < 0)
             {
-                throw new NotImplementedException("amount should be greater");
+                throw new NotImplementedException("amount should be Positive");
             }
-            this.Balance += amount;
+            else if (amount>this.Balance)
+            {
+                throw new NotImplementedException("insufficient balance");
+            }
+                this.Balance += amount;
         }
     }
 }

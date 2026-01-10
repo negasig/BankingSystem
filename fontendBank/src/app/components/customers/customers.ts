@@ -18,6 +18,7 @@ interface Customern{
    balance:number
    username:string
    password:string
+   accountNumber:string
 }
 @Component({
   selector: 'app-customers',
@@ -29,6 +30,7 @@ interface Customern{
 
 export class Customerss {
   editing:boolean=false;
+  status:string | any
   selectedCustomer: Customern | null = null;
   private customersSubject = new BehaviorSubject<Customern[]>([]);
   public customers$ = this.customersSubject.asObservable();
@@ -39,14 +41,14 @@ export class Customerss {
     this.http.get<Customern[]>('https://localhost:40443/api/customers')
     .subscribe(customers=>this.customersSubject.next(customers)) //populate initial value
   }
-deletecustomer(id: number){
+deletecustomer(id: string){
    console.log("Clicked Delete ID =", id);
    alert("are you sure you want dlete customer with id "+id)
-  this.http.delete(`https://localhost:40443/api/deletcus/${id}`, { responseType: 'text' })
+  this.http.delete(`https://localhost:40443/api/deletecus/${id}`, { responseType: 'text' })
   .subscribe((res)=>{
     console.log(res);
   })
-       const filterd= this.customersSubject.value.filter(u=>u.id !== id); // Remove row from U
+       const filterd= this.customersSubject.value.filter(u=>u.accountNumber !== id); // Remove row from U
         this.customersSubject.next(filterd)
 }
 
@@ -59,13 +61,13 @@ updateCustomer() {
   if (!this.selectedCustomer) return;
 
   this.http.put(
-    `https://localhost:40443/api/${this.selectedCustomer.id}`,
+    `https://localhost:40443/api/updateCustomer/${this.selectedCustomer.accountNumber}`,
     this.selectedCustomer,
     { responseType: 'text' }
   ).subscribe(() => {
 
     const customers = [...this.customersSubject.value];
-    const index = customers.findIndex(c => c.id === this.selectedCustomer!.id);
+    const index = customers.findIndex(c => c.accountNumber === this.selectedCustomer!.accountNumber);
 
     if (index !== -1) {
       customers[index] = this.selectedCustomer!;
@@ -83,10 +85,10 @@ opendAddModal(){
 }
 rgisterCustomer(){
 
-  this.http.post('https://localhost:40443/api/addcustomer', this.newcustomer,  {responseType: 'text'})
+  this.http.post('https://localhost:40443/api/register', this.newcustomer,  {responseType: 'text'})
         .subscribe({
       next: (res) => {
-        alert("registerd");
+        this.status=res;
         const curent=this.customersSubject.value;
         this.customersSubject.next([...curent, this.newcustomer]);
        const modalEl = document.getElementById('addcustomer');

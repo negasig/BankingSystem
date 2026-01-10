@@ -1,6 +1,7 @@
 
 
 <h2>Customers</h2>
+<p *ngIf="status">Successfully rrgisted</p>
 <button class="btn btn-secondary" (click)="opendAddModal()">register</button>
 <table *ngIf="customers$ | async as customers" border="1">
     <thead>
@@ -20,7 +21,7 @@
               <td>{{cust.email}}</td>
                <td>{{cust.city}}</td>
                 <td>{{cust.balance}}</td>
-                <td><i class="fa fa-trash" style="cursor:pointer; color: red;" (click)="deletecustomer(cust.id)"></i>
+                <td><i class="fa fa-trash" style="cursor:pointer; color: red;" (click)="deletecustomer(cust.accountNumber)"></i>
                      <i class="fa fa-edit"  (click)="opendEditModal(cust)" style="cursor: pointer;">
         </i></td>
         </tr>

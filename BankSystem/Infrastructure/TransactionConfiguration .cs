@@ -14,7 +14,6 @@ namespace BankSystem.Infrastructure
             builder.Property(x => x.Amount)
                    .HasPrecision(18, 2);
 
-            builder.HasIndex(x => x.CreatedAt);
         }
     }
 }

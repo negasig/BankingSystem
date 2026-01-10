@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BankSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class initialccxjgdf : Migration
+    public partial class adddtat : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customern",
+                name: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -28,11 +28,11 @@ namespace BankSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customern", x => x.Id);
+                    table.PrimaryKey("PK_Customer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactionsn",
+                name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -47,40 +47,18 @@ namespace BankSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactionsn", x => x.Id);
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Transfern",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ToCustomerId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transfern", x => x.Id);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactionsn_CreatedAt",
-                table: "Transactionsn",
-                column: "CreatedAt");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Customern");
+                name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Transactionsn");
-
-            migrationBuilder.DropTable(
-                name: "Transfern");
+                name: "Transactions");
         }
     }
 }

@@ -83,50 +83,50 @@ namespace BankSystem.controllers
             }
             return Task.FromResult<IActionResult>(Ok("Loged in Successfully"));
         }
-        [HttpPost("transfer")]
-        public Task<IActionResult> Transfer(Transaction tr)
-        {
-            var sender = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.SenderAccount);
-            var receiver = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.ReceiverAccount);
+        /*      [HttpPost("transfer")]
+              public Task<IActionResult> Transfer(Transaction tr)
+              {
+                  var sender = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.SenderAccount);
+                  var receiver = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.ReceiverAccount);
 
-            if (sender != null && receiver != null && sender.Balance > tr.Amount)
-            {
-          
-                _context.SaveChanges();
+                  if (sender != null && receiver != null && sender.Balance > tr.Amount)
+                  {
 
-                _context.Transactions.Add(new Transaction
-                {
-                    FirstName = sender.FirstName,
-                    LastName = sender.LastName,
-                    Amount = tr.Amount,
-                    SenderAccount = tr.SenderAccount,
-                    ReceiverAccount = tr.ReceiverAccount,
-                    Reason = tr.Reason
-                });
-                _context.SaveChanges();
-            }
+                      _context.SaveChanges();
 
-            else if (sender != null && sender.Balance < tr.Amount)
-            {
-                return Task.FromResult<IActionResult>(BadRequest("Sender has insufficient balance"));
-            }
-            else if (sender == null)
-            {
-                return Task.FromResult<IActionResult>(BadRequest(tr.SenderAccount + " is not valid account"));
-            }
-            else if (receiver == null)
-            {
-                return Task.FromResult<IActionResult>(BadRequest(tr.ReceiverAccount + " is not valid account"));
-            }
+                      Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Transaction> entityEntry = _context.Transactions.Add(new Transaction
+                      {
+                          FirstName = sender.FirstName,
+                          LastName = sender.LastName,
+                          Amount = tr.Amount,
+                          SenderAccount = tr.SenderAccount,
+                          ReceiverAccount = tr.ReceiverAccount,
+                          Reason = tr.Reason
+                      });
+                      _context.SaveChanges();
+                  }
+
+                  else if (sender != null && sender.Balance < tr.Amount)
+                  {
+                      return Task.FromResult<IActionResult>(BadRequest("Sender has insufficient balance"));
+                  }
+                  else if (sender == null)
+                  {
+                      return Task.FromResult<IActionResult>(BadRequest(tr.SenderAccount + " is not valid account"));
+                  }
+                  else if (receiver == null)
+                  {
+                      return Task.FromResult<IActionResult>(BadRequest(tr.ReceiverAccount + " is not valid account"));
+                  }
 
 
-            return Task.FromResult<IActionResult>(Ok("trsnaferd"));
-        }
-        [HttpGet("transactions")]
-        public async Task<IActionResult> geTransactions()
-        {
-            var transactions = await _context.Transactions.ToListAsync();
-            return Ok(transactions);
-        }
+                  return Task.FromResult<IActionResult>(Ok("trsnaferd"));
+              }
+              [HttpGet("transactions")]
+              public async Task<IActionResult> geTransactions()
+              {
+                  var transactions = await _context.Transactions.ToListAsync();
+                  return Ok(transactions);
+              }*/
     }
 }

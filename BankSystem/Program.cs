@@ -21,11 +21,12 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<ICustomerRepository, CutomerRepository>();
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepoImpl>();
+builder.Services.AddScoped<ITransactionRepository, TransferRepoImplementation>();
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<RegisterCustomerUseCase>();
-builder.Services.AddScoped<GetAllCustomersUseCase>();
+builder.Services.AddScoped<CustomerUsecases>();
+builder.Services.AddScoped<TransferUseCases>();
 
 var app = builder.Build();
 

@@ -25,6 +25,7 @@ interface Transactionss{
 export class Transactions {
   constructor(private http: HttpClient, private cd: ChangeDetectorRef){}
    transactions$!: Observable<Transactionss[]>;
+  
    ngOnInit(): void {
         this.transactions$ =
       this.http.get<Transactionss[]>('https://localhost:40443/api/transactions');

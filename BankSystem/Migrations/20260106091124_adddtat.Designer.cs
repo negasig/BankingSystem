@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260102122105_initialccxjgdf")]
-    partial class initialccxjgdf
+    [Migration("20260106091124_adddtat")]
+    partial class adddtat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace BankSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BankSystem.Domains.Customern", b =>
+            modelBuilder.Entity("BankSystem.Domains.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,10 +60,10 @@ namespace BankSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customern");
+                    b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("BankSystem.Domains.Transactionn", b =>
+            modelBuilder.Entity("BankSystem.Domains.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,29 +96,7 @@ namespace BankSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedAt");
-
-                    b.ToTable("Transactionsn");
-                });
-
-            modelBuilder.Entity("BankSystem.Domains.Transfern", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ToCustomerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Transfern");
+                    b.ToTable("Transactions");
                 });
 #pragma warning restore 612, 618
         }
