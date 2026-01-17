@@ -8,6 +8,7 @@ namespace BankSystem.Application
         Task AddAsync(Customer customer);
         Task<List<Customer>> GetAllAsync();
         Task<Customer?> GetCustomerById(string accnum);
+        Task<Customer?> GetCustomerByUsername(string uname);
         Task DeleteCustomer(Customer customer);
         Task UpdateCustomer(Customer customer, string accnumber);
         

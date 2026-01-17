@@ -41,7 +41,10 @@ namespace BankSystem.Infrastructure
             await _context.SaveChangesAsync();  
         }
 
-
+       public async Task<Customer?> GetCustomerByUsername(string uname)
+        {
+            return await _context.Customer.FirstOrDefaultAsync(a=>a.Username==uname);
+        }
     }
 }
 

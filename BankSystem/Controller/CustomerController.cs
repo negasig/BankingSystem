@@ -1,132 +1,115 @@
-﻿
+﻿using BankSystem.Application;
 using BankSystem.Domains;
 using BankSystem.Infrastructure;
-using BankSystem.NewFolder;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Server;
-using System.Diagnostics;
-namespace BankSystem.controllers
-{
+using System.Net.Http.Headers;
 
+namespace BankSystem.Controller
+{
     [ApiController]
     [Route("api/")]
 
-
-
     public class CustomerController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public CustomerController(AppDbContext context)
+        private readonly CustomerUsecases _custservices;
+        private readonly TransferUseCases _transferservices;
+        private readonly IJwtService _jwtService;
+
+        public CustomerController(
+            CustomerUsecases usecase, TransferUseCases transferservices, IJwtService jwtService)
         {
-            _context = context;
+            _custservices = usecase;
+            _transferservices = transferservices;
+            _jwtService = jwtService;
+
         }
-        [HttpGet("list")]
-        public async Task<ActionResult> GetCustomers()
+   
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(Customer request)
         {
-            var customers = await _context.Customer.AsNoTracking().ToListAsync();
+           var res= await _custservices.RegisterCustomer(
+request.FirstName, request.LastName, request.Email, request.City, request.Balance, request.Username, request.Password, request.AccountNumber);
+          
+            return Ok(res);
+        }
+        [Authorize]
+        [HttpGet("customers")]
+        public async Task<IActionResult> GetAll()
+        {
+            var customers = await _custservices.GetCustomers();
             return Ok(customers);
         }
-
-        [HttpPost("addcustomer")]
-        public async Task<IActionResult> AddCustomer(Customer customer)
+        [HttpGet("customers/{id}")]
+        public async Task<ActionResult> GetCustomerById(string id)
         {
-            _context.Customer.Add(customer);
-            await _context.SaveChangesAsync();
-            return Ok(customer);
-        }
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Customer>> getCustomerById(int id)
-        {
-            var customer = _context.Customer.Find(id);
+            var customer = await _custservices.GetCustomerById(id);
             if (customer == null)
             {
-                return NotFound($"Customer with ID {id} not found");
+                return NotFound($"No Customer with Id {id}");
             }
             return Ok(customer);
         }
-        [HttpDelete("deletcus/{id}")]
-        public ActionResult deleteCustomer(int id)
+        [Authorize]
+        [HttpDelete("deletecus/{id}")]
+        public async Task<IActionResult> DeleteCustomer(string id)
         {
-            var cus = _context.Customer.Find(id);
-            if (cus == null)
+            try
             {
-                return NotFound($"Customer with ID {id} not found");
+                await _custservices.DeleteCustomer(id);
+                return Ok($"Customer with Id {id} has been Deleted"); // 204
             }
-            _context.Customer.Remove(cus);
-            _context.SaveChanges();
-            return Ok("Customer with ID " + id + "has been deleted");
+            catch (ApplicationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-        [HttpPut("{id}")]
-        public ActionResult UpdateCustomer(int id, Customer updatedCustomer)
+        [HttpPut("updateCustomer/{id}")]
+        public async Task<IActionResult> UpdateCustomer(string id, Customer c)
         {
-            var existingCustomer = _context.Customer.Find(id);
-            if (existingCustomer == null)
+            try
             {
-                return NotFound($"Customer with ID {id} Not found");
+                await _custservices.UpdateCustomer(id, c);
+                return Ok($"Customer with Id {id} has been Updated"); // 204
             }
-            existingCustomer.FirstName = updatedCustomer.FirstName;
-            existingCustomer.LastName = updatedCustomer.LastName;
-            existingCustomer.Email = updatedCustomer.Email;
-            existingCustomer.City = updatedCustomer.City;
-        
-            _context.SaveChanges();
-            return Ok(existingCustomer);
+            catch (ApplicationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
+      
+        [HttpPost("transfer")]
+        public async Task<IActionResult> Transfer(Transaction transaction)
+        {
+            var result=await _transferservices.Transfer(transaction);
+            if(result==false)
+            {
+                return BadRequest("Sender or Receiver Account Not found");
+            }
+            return Ok("Transfer successfull");
+        }
+        [HttpGet("transactions")]
+        public  async Task<List<Transaction>> transactions()
+        {
+          return await _transferservices.Transactions();
+        }
+        [AllowAnonymous]
         [HttpPost("login")]
-        public Task<IActionResult> Login(LoginDto login)
+        public async Task<IActionResult> Login(LoginRequestt request)
         {
-            var customer = _context.Customer.FirstOrDefault(c => c.Username == login.Username && c.Password == login.Password);
-            if (customer == null)
-            {
-                return Task.FromResult<IActionResult>(Unauthorized("Invalid email or password"));
-            }
-            return Task.FromResult<IActionResult>(Ok("Loged in Successfully"));
+            var user = await _custservices.GetCustomerByUsername(request.Username);
+
+            if (user == null)
+                return Unauthorized("Invalid credentials Please try again");
+            else if (request.Password != user.Password)
+                return Unauthorized("IInvalid credentials Please try again");
+                var token = _jwtService.GenerateToken(user.Id.ToString(), user.Username);
+
+            return Ok(new { token });
         }
-        /*      [HttpPost("transfer")]
-              public Task<IActionResult> Transfer(Transaction tr)
-              {
-                  var sender = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.SenderAccount);
-                  var receiver = _context.Customer.FirstOrDefault(c => c.AccountNumber == tr.ReceiverAccount);
 
-                  if (sender != null && receiver != null && sender.Balance > tr.Amount)
-                  {
-
-                      _context.SaveChanges();
-
-                      Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Transaction> entityEntry = _context.Transactions.Add(new Transaction
-                      {
-                          FirstName = sender.FirstName,
-                          LastName = sender.LastName,
-                          Amount = tr.Amount,
-                          SenderAccount = tr.SenderAccount,
-                          ReceiverAccount = tr.ReceiverAccount,
-                          Reason = tr.Reason
-                      });
-                      _context.SaveChanges();
-                  }
-
-                  else if (sender != null && sender.Balance < tr.Amount)
-                  {
-                      return Task.FromResult<IActionResult>(BadRequest("Sender has insufficient balance"));
-                  }
-                  else if (sender == null)
-                  {
-                      return Task.FromResult<IActionResult>(BadRequest(tr.SenderAccount + " is not valid account"));
-                  }
-                  else if (receiver == null)
-                  {
-                      return Task.FromResult<IActionResult>(BadRequest(tr.ReceiverAccount + " is not valid account"));
-                  }
-
-
-                  return Task.FromResult<IActionResult>(Ok("trsnaferd"));
-              }
-              [HttpGet("transactions")]
-              public async Task<IActionResult> geTransactions()
-              {
-                  var transactions = await _context.Transactions.ToListAsync();
-                  return Ok(transactions);
-              }*/
     }
 }
+

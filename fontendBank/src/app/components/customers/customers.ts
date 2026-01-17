@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { log } from 'console';
 import { CommonModule, NgIf } from '@angular/common';
 import { Router } from 'express';
@@ -35,16 +35,17 @@ export class Customerss {
   private customersSubject = new BehaviorSubject<Customern[]>([]);
   public customers$ = this.customersSubject.asObservable();
   newcustomer:Customern={} as Customern
+  
   constructor(private http: HttpClient, private cd: ChangeDetectorRef){}
   
   ngOnInit(): void {
-    this.http.get<Customern[]>('https://localhost:40443/api/customers')
+    this.http.get<Customern[]>('https://localhost:40443/api/customers', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
     .subscribe(customers=>this.customersSubject.next(customers)) //populate initial value
   }
 deletecustomer(id: string){
    console.log("Clicked Delete ID =", id);
    alert("are you sure you want dlete customer with id "+id)
-  this.http.delete(`https://localhost:40443/api/deletecus/${id}`, { responseType: 'text' })
+  this.http.delete(`https://localhost:40443/api/deletecus/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }})
   .subscribe((res)=>{
     console.log(res);
   })

@@ -37,6 +37,10 @@ namespace BankSystem.Application
         {
             return await _registerRepo.GetCustomerById(id);
         }
+        public async Task<Customer?> GetCustomerByUsername(string useranme)
+        {
+            return await _registerRepo.GetCustomerByUsername(useranme);
+        }
         public async Task DeleteCustomer(string id)
         {
             var customer = await _registerRepo.GetCustomerById(id);
